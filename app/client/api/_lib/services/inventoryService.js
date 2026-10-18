@@ -47,7 +47,7 @@ export async function getWarehouses({ activeOnly = false } = {}) {
     sql += ` WHERE w.is_active = 1`;
   }
   sql += ` GROUP BY w.id ORDER BY w.is_default DESC, w.name ASC`;
-  return await db.prepare(sql).all().map((r) => ({
+  return (await db.prepare(sql).all()).map((r) => ({
     ...r,
     product_count: Number(r.product_count) || 0,
     total_on_hand: Number(r.total_on_hand) || 0,
@@ -1223,7 +1223,7 @@ export async function getStockReceipts({
        LEFT JOIN "user" u ON u.id = r.created_by
        LEFT JOIN stock_receipt_item i ON i.receipt_id = r.id
        ${whereSql}
-       GROUP BY r.id
+       GROUP BY r.id, w.name, w.code, u.username
        ORDER BY r.id DESC
        LIMIT ? OFFSET ?`
     )
@@ -3071,7 +3071,7 @@ export async function getStockIntelligence({ start = null, end = null, warehouse
     LEFT JOIN sale_report_item sri ON sri.sale_report_id = sr.id
     LEFT JOIN warehouse w ON w.id = sr.warehouse_id
     WHERE sr.status = 'CONFIRMED' ${whId ? 'AND sr.warehouse_id = ?' : ''}
-    GROUP BY sr.id
+    GROUP BY sr.id, w.name
     ORDER BY sr.sale_date DESC, sr.id DESC
     LIMIT 5
   `;

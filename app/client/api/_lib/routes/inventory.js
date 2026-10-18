@@ -710,36 +710,6 @@ router.post('/receipts/preview-rows', async (req, res) => {
 });
 
 /**
- * GET /api/inventory/intelligence
- * Comprehensive stock velocity, demand trends, coverage analysis, and replenishment recommendations
- */
-router.get('/intelligence', async (req, res) => {
-  try {
-    const warehouseId = req.query.warehouseId ? Number(req.query.warehouseId) : undefined;
-    const productId = req.query.productId ? Number(req.query.productId) : undefined;
-    const period = req.query.period ? Number(req.query.period) : undefined;
-    const start = req.query.start ? String(req.query.start).trim() : undefined;
-    const end = req.query.end ? String(req.query.end).trim() : undefined;
-    const limit = req.query.limit ? Number(req.query.limit) : undefined;
-    const offset = req.query.offset ? Number(req.query.offset) : undefined;
-
-    const result = await getStockIntelligence({
-      warehouseId,
-      productId,
-      period,
-      start,
-      end,
-      limit,
-      offset,
-    });
-    res.json(result);
-  } catch (err) {
-    console.error('Error computing stock intelligence:', err);
-    res.status(500).json({ error: err.message || 'Failed to compute stock intelligence' });
-  }
-});
-
-/**
  * GET /api/inventory/operations/overview
  */
 router.get('/operations/overview', async (req, res) => {

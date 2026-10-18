@@ -768,7 +768,7 @@ export async function getSalesReportsData({ period = 'month', companyId = null, 
        FROM company c
        LEFT JOIN sale_report sr ON sr.company_id = c.id AND sr.status = 'CONFIRMED'
        GROUP BY c.id
-       HAVING total_sales > 0
+       HAVING COALESCE(SUM(sr.total_amount), 0) > 0
        ORDER BY total_sales DESC`
     )
     .all();
